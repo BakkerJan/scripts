@@ -65,11 +65,12 @@ try {
         Write-Host "Already connected to Microsoft Graph as $($context.Account)" -ForegroundColor Green
     }
     
-    # Step 1: Find users with passKeyDeviceBound registered
+    # Step 1: Find users with device-bound passkeys registered
+    # Filtering for passKeyDeviceBound and passKeyDeviceBoundAuthenticator
     Write-Host "`nStep 1: Querying users with device-bound passkeys..." -ForegroundColor Cyan
     
     $uri = "https://graph.microsoft.com/beta/reports/authenticationMethods/userRegistrationDetails"
-    $filter = "methodsRegistered/any(m:m eq 'passKeyDeviceBound')"
+    $filter = "methodsRegistered/any(m:m eq 'passKeyDeviceBound' or m eq 'passKeyDeviceBoundAuthenticator')"
     $select = "userPrincipalName,userDisplayName,id"
     
     $usersWithPasskeys = Invoke-MgGraphRequest -Method GET -Uri "$uri`?`$filter=$filter&`$select=$select" -Headers @{"ConsistencyLevel" = "eventual" }
